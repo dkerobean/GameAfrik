@@ -7,7 +7,7 @@ from .models import CustomUser, Profile
 def create_profile(sender, instance, created, **kwargs):
     if created:
         user = instance
-        user_profile = Profile.objects.create(
+        user_profile = Profile.objects.create(  # noqa
             user=user,
             username=user.name
         )
