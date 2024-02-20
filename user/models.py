@@ -1,22 +1,20 @@
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
-from django.contrib.auth.models import (AbstractBaseUser,
-                                        PermissionsMixin,
-                                        BaseUserManager)
+from django.utils.translation import gettext_lazy as _
 import uuid
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save()
-
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -27,13 +25,30 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
 
+    def get_by_natural_key(self, email):
+        return self.get(email=email)
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    profile = models.OneToOneField('Profile', on_delete=models.CASCADE,
-                                   null=True, blank=True)
+    profile = models.OneToOneField("Profile", on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100)
+
+    # Add related_name to avoid clashes with auth.User's groups and permissions
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name=_('groups'),
+        blank=True,
+        related_name='customuser_set'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name=_('user permissions'),
+        blank=True,
+        related_name='customuser_set'
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -57,20 +72,19 @@ class Profile(models.Model):
         ('expert', 'Expert')
     ]
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                             related_name="profiles")
     username = models.CharField(max_length=100)
     role = models.CharField(max_length=50, choices=USER_ROLES, default="user")
     avatar = models.ImageField(upload_to='user_profiles', blank=True,
-                               null=True, deffault='user_profile/avatar.svg')
+                               null=True, default='user_profile/avatar.svg')
     bio = models.TextField(null=True, blank=True)
-    location = models.CharField(max_length=100)
-    skill_level = models.CharField(choices=USER_SKILLS, default='beginner')
+    location = models.CharField(max_length=100, null=True, blank=True)
+    skill_level = models.CharField(max_length=20, choices=USER_SKILLS,
+                                   default='beginner')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     def __str__(self):
         return self.username
-    
-
-
