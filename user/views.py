@@ -34,7 +34,7 @@ class UserLoginView(APIView):
 
 class UserLogoutView(APIView):
     def post(self, request):
-        token = request.data.get('token')
+        token = request.headers.get('Authorization')
         if token:
             token.blacklist()
             return Response({'message': 'Logout successful'},
