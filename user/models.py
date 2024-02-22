@@ -90,3 +90,55 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class Clips(models.Model):
+    name = models.CharField(max_length=100)
+    url = models.URLField(max_length=200)
+    category = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Game(models.Model):
+    name = models.CharField(max_length=150)
+    image = models.ImageField(upload_to='games')
+    description = models.TextField()
+    clips = models.ForeignKey(Clips, on_delete=models.CASCADE)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Tournament(models.Model):
+    GAME_STATUS = [
+        ('open', 'Open'),
+        ('ongoing', 'Ongoing'),
+        ('completed', 'Completed')
+    ]
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='tournaments')
+    game_type = models.CharField(max_length=100)
+    game_mode = models.CharField(max_length=100)
+    game_format = models.CharField(max_length=100)
+    entry_fee = models.IntegerField()
+    prize_pool = models.IntegerField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    bracket = models.CharField(max_length=50, null=True, blank=True)
+    participants = models.ManyToManyField(Profile, related_name='tournaments_participated')
+    host = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='hosted_tournaments')
+    status = models.CharField(choices=GAME_STATUS, max_length=50)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    def __str__(self):
+        return self.name
+
+
+
+
+
+
