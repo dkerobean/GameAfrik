@@ -129,10 +129,13 @@ class Tournament(models.Model):
     end_date = models.DateTimeField()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     bracket = models.CharField(max_length=50, null=True, blank=True)
-    participants = models.ManyToManyField(Profile, related_name='tournaments_participated')
-    host = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='hosted_tournaments')
+    participants = models.ManyToManyField(Profile,
+                                          related_name='tournaments_participated')
+    host = models.ForeignKey(Profile, on_delete=models.CASCADE,
+                             related_name='hosted_tournaments')
     status = models.CharField(choices=GAME_STATUS, max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    rules = models.TextField()
 
     def __str__(self):
         return self.name
