@@ -130,7 +130,7 @@ class Tournament(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     bracket = models.CharField(max_length=50, null=True, blank=True)
     participants = models.ManyToManyField(Profile,
-                                          related_name='tournaments_participated')
+                                          related_name='tournaments_participated') # noqa
     host = models.ForeignKey(Profile, on_delete=models.CASCADE,
                              related_name='hosted_tournaments')
     status = models.CharField(choices=GAME_STATUS, max_length=50)
@@ -139,9 +139,3 @@ class Tournament(models.Model):
 
     def __str__(self):
         return self.name
-
-
-
-
-
-
