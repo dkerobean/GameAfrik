@@ -23,6 +23,9 @@ class UserLoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
+        if not email or not password:
+            return Response({'error': 'Both email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
         user = authenticate(email=email, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
@@ -31,8 +34,7 @@ class UserLoginView(APIView):
                 'access': str(refresh.access_token),
             }, status=status.HTTP_200_OK)
         else:
-            return Response({'error': 'Invalid Credentials'},
-                            status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserLogoutView(APIView):
