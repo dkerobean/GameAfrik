@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('games/', views.GameView.as_view(), name="games"),
-    path('tournaments/', views.TournamnetView.as_view(), name="tournaments"),
+    path('tournaments/', views.TournamentView.as_view(), name="tournaments"),
+    path('tournament/<uuid:pk>/', views.TournamentView.as_view(), name="tornament"),
 ]
