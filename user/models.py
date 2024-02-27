@@ -63,7 +63,8 @@ class Profile(models.Model):
     role = models.CharField(_('role'), max_length=50, choices=USER_ROLES,
                             default="user")
     avatar = models.ImageField(_('avatar'), upload_to='user_profiles',
-                               blank=True, null=True, default='user_profile/avatar.svg')
+                               blank=True, null=True,
+                               default='user_profile/avatar.svg')
     bio = models.TextField(_('bio'), null=True, blank=True)
     location = models.CharField(_('location'), max_length=100,
                                 null=True, blank=True)
