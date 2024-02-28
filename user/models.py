@@ -116,7 +116,7 @@ class Tournament(models.Model):
     end_date = models.DateTimeField()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     bracket = models.CharField(max_length=50, null=True, blank=True)
-    participants = models.ManyToManyField(Profile, null=True, blank=True,
+    participants = models.ManyToManyField(Profile,
                                           related_name='tournaments_participated') # noqa
     host = models.ForeignKey(Profile, on_delete=models.CASCADE,
                              related_name='hosted_tournaments')
