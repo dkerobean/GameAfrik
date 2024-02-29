@@ -121,7 +121,7 @@ class Tournament(models.Model):
                              related_name='hosted_tournaments')
     status = models.CharField(choices=GAME_STATUS, max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    clips = models.ManyToManyField(Clips, on_delete=models.CASCADE)
+    clips = models.ManyToManyField(Clips)
     rules = models.TextField()
 
     def __str__(self):
@@ -135,4 +135,3 @@ class GameCategory(models.Model):
 
     def __str__(self):
         return self.name
-
