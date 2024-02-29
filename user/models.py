@@ -82,7 +82,6 @@ class Profile(models.Model):
 class Clips(models.Model):
     name = models.CharField(max_length=100)
     url = models.URLField(max_length=200)
-    category = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -122,7 +121,18 @@ class Tournament(models.Model):
                              related_name='hosted_tournaments')
     status = models.CharField(choices=GAME_STATUS, max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    clips = models.ManyToManyField(Clips, on_delete=models.CASCADE)
     rules = models.TextField()
 
     def __str__(self):
         return self.name
+
+
+class GameCategory(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='game_categories')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
