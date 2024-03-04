@@ -121,11 +121,19 @@ class Tournament(models.Model):
                              related_name='hosted_tournaments')
     status = models.CharField(choices=GAME_STATUS, max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    clips = models.ManyToManyField(Clips)
+    clips = models.ManyToManyField(Clips, through='TournamentClips')
     rules = models.TextField()
 
     def __str__(self):
         return self.name
+
+
+class TournamentClips(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    clips = models.ForeignKey(Clips, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.tournament.name} - {self.clips.name}'
 
 
 class GameCategory(models.Model):
