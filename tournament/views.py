@@ -16,7 +16,7 @@ class GameView(APIView):
 
 
 class TournamentView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         tournaments = Tournament.objects.all()
@@ -57,9 +57,4 @@ class TournamentView(APIView):
 
         tournament.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-
-
 
