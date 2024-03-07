@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from user.models import Game, Tournament
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import permission_classes
 
 
 class GameView(APIView):
@@ -16,13 +17,13 @@ class GameView(APIView):
 
 
 class TournamentView(APIView):
-    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         tournaments = Tournament.objects.all()
         serializer = TournamentSerializer(tournaments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @permission_classes([IsAuthenticated])
     def post(self, request):
         if not request.user.role == 'host':
             raise PermissionDenied('Only hosts can create tournaments')
@@ -35,6 +36,7 @@ class TournamentView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @permission_classes([IsAuthenticated])
     def put(self, request, pk):
         tournament = get_object_or_404(Tournament, uuid=pk)
 
@@ -48,6 +50,7 @@ class TournamentView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @permission_classes([IsAuthenticated])
     def delete(self, request, pk):
         tournament = get_object_or_404(Tournament, uuid=pk)
 
@@ -57,4 +60,3 @@ class TournamentView(APIView):
 
         tournament.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
