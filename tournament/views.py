@@ -63,7 +63,7 @@ class TournamentView(APIView):
 
 
 class JoinedTournamentView(APIView):
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         tournaments = Tournament.objects.filter(participants=request.user.profile)
@@ -72,7 +72,7 @@ class JoinedTournamentView(APIView):
 
 
 class LeaveTournamentView(APIView):
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk):
         tournament = get_object_or_404(Tournament, uuid=pk)
