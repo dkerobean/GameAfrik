@@ -87,11 +87,20 @@ class Clips(models.Model):
         return self.name
 
 
+# class GameCategory(models.Model):
+#     name = models.CharField(max_length=100)
+#     image = models.ImageField(upload_to='game_categories')
+
+#     def __str__(self):
+#         return self.name
+
+
 class Game(models.Model):
     name = models.CharField(max_length=150)
     image = models.ImageField(upload_to='games')
     description = models.TextField()
     clips = models.ForeignKey(Clips, on_delete=models.CASCADE)
+    # category = models.ForeignKey(GameCategory, on_delete=models.CASCADE)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     def __str__(self):
@@ -135,11 +144,3 @@ class TournamentClips(models.Model):
     def __str__(self):
         return f'{self.tournament.name} - {self.clips.name}'
 
-
-class GameCategory(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='game_categories')
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
