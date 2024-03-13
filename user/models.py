@@ -143,4 +143,3 @@ class TournamentClips(models.Model):
 
     def __str__(self):
         return f'{self.tournament.name} - {self.clips.name}'
-

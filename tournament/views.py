@@ -66,7 +66,8 @@ class JoinedTournamentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        tournaments = Tournament.objects.filter(participants=request.user.profile)
+        tournaments = Tournament.objects.filter(
+            participants=request.user.profile)
         serializer = TournamentSerializer(tournaments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
