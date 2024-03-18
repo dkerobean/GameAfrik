@@ -82,10 +82,17 @@ class Profile(models.Model):
 class Clips(models.Model):
     name = models.CharField(max_length=100)
     url = models.URLField(max_length=200)
-    category = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
+
+# class GameCategory(models.Model):
+#     name = models.CharField(max_length=100)
+#     image = models.ImageField(upload_to='game_categories')
+
+#     def __str__(self):
+#         return self.name
 
 
 class Game(models.Model):
@@ -93,6 +100,7 @@ class Game(models.Model):
     image = models.ImageField(upload_to='games')
     description = models.TextField()
     clips = models.ForeignKey(Clips, on_delete=models.CASCADE)
+    # category = models.ForeignKey(GameCategory, on_delete=models.CASCADE)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     def __str__(self):
@@ -122,7 +130,16 @@ class Tournament(models.Model):
                              related_name='hosted_tournaments')
     status = models.CharField(choices=GAME_STATUS, max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    clips = models.ManyToManyField(Clips, through='TournamentClips')
     rules = models.TextField()
 
     def __str__(self):
         return self.name
+
+
+class TournamentClips(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    clips = models.ForeignKey(Clips, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.tournament.name} - {self.clips.name}'
