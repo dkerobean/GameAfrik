@@ -72,6 +72,16 @@ class JoinedTournamentView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class HostedTournamentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        tournaments = Tournament.objects.filter(
+            host=request.user.profile)
+        serializer = TournamentSerializer(tournaments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class LeaveTournamentView(APIView):
     permission_classes = [IsAuthenticated]
 
