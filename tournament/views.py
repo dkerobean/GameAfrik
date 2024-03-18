@@ -42,7 +42,7 @@ class TournamentView(APIView):
 
         # Check if the user is the host of the tournament
         if request.user.profile != tournament.host:
-            raise PermissionDenied('You do not have permission to perform this action')
+            raise PermissionDenied('You do not have permission to perform this action')  # noqa
 
         serializer = TournamentSerializer(tournament, data=request.data)
         if serializer.is_valid():
@@ -56,7 +56,7 @@ class TournamentView(APIView):
 
         # Check if the user is the host of the tournament
         if request.user.profile != tournament.host:
-            raise PermissionDenied("You do not have permission to perform this action.")
+            raise PermissionDenied("You do not have permission to perform this action.") # noqa
 
         tournament.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -91,7 +91,8 @@ class LeaveTournamentView(APIView):
             tournament.participants.remove(request.user.profile)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"detail": "You are not registered in this tournament."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "You are not registered in this tournament."}, # noqa
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class JoinTournamentView(APIView):
@@ -102,12 +103,12 @@ class JoinTournamentView(APIView):
 
         # Check if the tournament is already started or finished
         if tournament.status != 'open':
-            return Response({"detail": "Cannot join the tournament. It is not open for registration."},
+            return Response({"detail": "Cannot join the tournament. It is not open for registration."},  # noqa
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Check if the user is already a participant
         if request.user.profile in tournament.participants.all():
-            return Response({"detail": "You are already registered in this tournament."},
+            return Response({"detail": "You are already registered in this tournament."},  # noqa
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Add the user to the tournament's participants
