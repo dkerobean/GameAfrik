@@ -3,6 +3,7 @@ from django.contrib.auth.models import (AbstractBaseUser,
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import uuid
+from django.core.validators import MinValueValidator
 
 
 class CustomUserManager(BaseUserManager):
@@ -70,6 +71,7 @@ class Profile(models.Model):
                                 null=True, blank=True)
     skill_level = models.CharField(_('skill level'), max_length=20,
                                    choices=USER_SKILLS, default='beginner')
+    is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('updated at'), auto_now=True)
     uuid = models.UUIDField(_('UUID'), default=uuid.uuid4,
@@ -124,6 +126,8 @@ class Tournament(models.Model):
     end_date = models.DateTimeField()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     bracket = models.CharField(max_length=50, null=True, blank=True)
+    number_of_participants = models.IntegerField(
+        validators=[MinValueValidator(2)])
     participants = models.ManyToManyField(Profile,
                                           related_name='tournaments_participated') # noqa
     host = models.ForeignKey(Profile, on_delete=models.CASCADE,

@@ -111,6 +111,11 @@ class JoinTournamentView(APIView):
             return Response({"detail": "You are already registered in this tournament."},  # noqa
                             status=status.HTTP_400_BAD_REQUEST)
 
+        # check available slots for the tournament
+        if tournament.number_of_participants == tournament.participants.count():   # noqa
+            return Response({"error": "All Slots filed for this tournament"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         # Add the user to the tournament's participants
         tournament.participants.add(request.user.profile)
         serializer = TournamentSerializer(tournament)
