@@ -16,7 +16,7 @@ class GameView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class TournamentView(APIView):
+class TournamentsView(APIView):
 
     def get(self, request):
         tournaments = Tournament.objects.all()
@@ -60,6 +60,13 @@ class TournamentView(APIView):
 
         tournament.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TournamentView(APIView):
+    def get(self, request, pk):
+        tournament = get_object_or_404(Tournament, uuid=pk)
+        serializer = TournamentSerializer(tournament)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class JoinedTournamentView(APIView):
